@@ -1,0 +1,22 @@
+{
+  "name": "tinyapp",
+  "version": "1.0.0",
+  "description": "url shortening app",
+  "main": "index.js",
+  "scripts": {
+    "test": "testing12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ironwhisper/TinyApp.git"
+  },
+  "keywords": [
+    "Tiny"
+  ],
+  "author": "Stan Solo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ironwhisper/TinyApp/issues"
+  },
+  "homepage": "https://github.com/Ironwhisper/TinyApp#readme"
+}
