@@ -62,10 +62,9 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/u/:id", (req, res) => {
-
-  let longURL = urlDatabase.find( x => x.id).long
-
+app.get("/u/:shortURL", (req, res) => {
+  let id = req.params.shortURL;
+  let longURL = urlDatabase.find( x => x.id == id).long
   res.redirect(longURL);
 });
 
