@@ -44,9 +44,15 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("Ok");
+
+  let randomId = generateRandomString();
+
+  urlDatabase.push({id: randomId, long: req.body.longURL})
+  let target_url = "/urls/" + randomId
+  res.redirect(target_url)
 });
+
+
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
@@ -54,6 +60,13 @@ app.get("/urls/:id", (req, res) => {
     urls: urlDatabase
   };
   res.render("urls_show", templateVars);
+});
+
+app.get("/u/:id", (req, res) => {
+
+  let longURL = urlDatabase.find( x => x.id).long
+
+  res.redirect(longURL);
 });
 
 app.get("/", (req, res) => {
