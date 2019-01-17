@@ -62,6 +62,14 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+
+  urlDatabase.find( x => x.id == req.params.id).long = null;
+  urlDatabase.find( x => x.id == req.params.id).id = null;
+  res.redirect("/urls");
+
+});
+
 app.get("/u/:shortURL", (req, res) => {
   let id = req.params.shortURL;
   let longURL = urlDatabase.find( x => x.id == id).long
