@@ -9,11 +9,19 @@
 <header>
     <% include partials/_header %>
 </header>
+      <h2> Your short URL is: <%= shortURL %></h2>
       <p>
       Use this link to go to <%= urls.find(x => x.id == shortURL).long %> :
       </p>
       <p>
         <a href = <%= urls.find(x => x.id == shortURL).long %> >localhost:8080/u/<%= shortURL %> </a>
       </p>
+
+      <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
+
+      <input id="updURL" type="text" name="updURL" placeholder="http://" style="width: 300px">
+
+      <input type="submit" value="Update!">
+      </form>
 </body>
 </html>

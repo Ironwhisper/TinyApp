@@ -70,6 +70,15 @@ app.post("/urls/:id/delete", (req, res) => {
 
 });
 
+app.post("/urls/:id/update", (req, res) => {
+
+  let foundUrl = urlDatabase.find( x => x.id == req.params.id)
+  foundUrl.long = req.body.updURL;
+
+  res.redirect(`/urls/${foundUrl.id}`);
+
+});
+
 app.get("/u/:shortURL", (req, res) => {
   let id = req.params.shortURL;
   let longURL = urlDatabase.find( x => x.id == id).long
