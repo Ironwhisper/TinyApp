@@ -13,12 +13,19 @@
 
         </ul>
     </div>
+
+    <% if (username == undefined) { %>
       <form action="/login" method="POST" style="margin:10px;">
-
       <input id="login" type="text" name="login" placeholder="username" >
-
       <input type="submit" value="Login">
       </form>
-
+    <% } else { %>
+        <p>
+          Your login is: <%=username%>
+        </p>
+        <form method="POST" action="/logout">
+        <input type="submit" value="Logout!">
+        </form>
+    <% } %>
 </div>
 </nav>
