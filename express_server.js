@@ -67,7 +67,6 @@ app.get("/urls/new", (req, res) => {
 
 //LOGIN
 app.post("/login", (req, res) => {
-  res.cookie("username", req.body.login)
   res.redirect("/urls");
 });
 
@@ -96,7 +95,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-//register
+//REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
     username: req.cookies["username"]
@@ -104,6 +103,20 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars)
 })
 
+//REGISTER ACTION
+app.post("/register", (req, res) => {
+  const userID = generateRandomString();
+
+
+  users.userID = {
+    id : userID,
+    email : req.body.email,
+    password : req.body.password
+  }
+  console.log(users);
+  res.cookie("username", userID)
+  res.redirect("/urls");
+})
 
 //DELETE
 app.post("/urls/:id/delete", (req, res) => {
