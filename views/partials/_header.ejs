@@ -14,14 +14,17 @@
         </ul>
     </div>
 
-    <% if (username == undefined) { %>
-      <form action="/login" method="POST" style="margin:10px;">
-      <input id="login" type="text" name="login" placeholder="username" >
-      <input type="submit" value="Login">
-      </form>
+    <% if (guest == undefined) { %>
+      <a href="/login">
+          <button>Login</button>
+      </a>
+
+      <a href="/register">
+          <button>Register</button>
+      </a>
     <% } else { %>
         <p>
-          Your login is: <%=username%>
+          Your guest name is: <%=guest%>
         </p>
         <form method="POST" action="/logout">
         <input type="submit" value="Logout!">
