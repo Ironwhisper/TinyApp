@@ -19,6 +19,19 @@ let urlDatabase = [
   }
 ];
 
+let users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
 
 function generateRandomString() {
 
@@ -83,6 +96,15 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//register
+app.get("/register", (req, res) => {
+  let templateVars = {
+    username: req.cookies["username"]
+  };
+  res.render("urls_register", templateVars)
+})
+
+
 //DELETE
 app.post("/urls/:id/delete", (req, res) => {
   urlDatabase.find( x => x.id == req.params.id).long = null;
@@ -108,6 +130,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
+
 
 //INITIATE SERVER
 app.listen(PORT, () => {
