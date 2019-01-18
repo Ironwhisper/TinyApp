@@ -51,7 +51,7 @@ function generateRandomString() {
 
 //FIGURE OUT THAT ERROR WITH .long
 
-//INDEX PAGE
+//URLS_INDEX
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -63,8 +63,11 @@ app.get("/urls", (req, res) => {
 //URLS_NEW
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-  guest: req.cookies["guest"],
-};
+    guest: req.cookies["guest"],
+  };
+  if (!req.cookies.guest) {
+    res.redirect("/login");
+  }
   res.render("urls_new", templateVars);
 });
 
@@ -76,7 +79,7 @@ app.post("/urls", (req, res) => {
   res.redirect(target_url)
 });
 
-//SHOW URL
+//URLS_SHOW
 app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
@@ -122,7 +125,7 @@ app.get("/register", (req, res) => {
   res.render("urls_register", templateVars)
 })
 
-//REGISTER ACTION
+//REGISTER POST
 app.post("/register", (req, res) => {
 
   const userID = generateRandomString();
@@ -151,12 +154,13 @@ app.post("/register", (req, res) => {
 app.get("/login", (req, res) => {
   let templateVars = {
     guest: req.cookies["guest"]
-  };  res.render("urls_login", templateVars)
+  };
+  res.render("urls_login", templateVars)
 })
 
 //LOGIN POST
 app.post("/login", (req,res) => {
-// LOOK FOR EXISTING USER< AND CHECK IF PASSWORDS MATCH< THEN SET COOKIE WITH USER'S UNIQUE ID
+
   if (!req.body.email || !req.body.password) {
     res.status(400).send('Empty email or password fields.');
     return;
