@@ -82,7 +82,7 @@ app.get("/urls", (req, res) => {
 //URLS_NEW
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    guest: req.session["guest"],
+    guest: req.session.guest,
   };
   if (!req.session.guest) {
     res.redirect("/login");
@@ -94,10 +94,10 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls", (req, res) => {
   let randomId = generateRandomString();
   if (req.body.longURL.substring(0, 8) === "https://" || req.body.longURL.substring(0, 7) === "http://") {
-    urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest})
+    urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest});
   }
-  let target_url = "/urls/" + randomId
-  res.redirect(target_url)
+  let target_url = "/urls/" + randomId;
+  res.redirect(target_url);
 });
 
 //URLS_SHOW
@@ -113,7 +113,7 @@ app.get("/urls/:id", (req, res) => {
     return userURLS;
   }
   let userURLNEW = urlsForUser(req.params.id);
-  console.log(userURLNEW)
+  console.log(userURLNEW);
 
   function isValidURL(urlArr) {
     for (let i of urlArr) {
@@ -125,22 +125,18 @@ app.get("/urls/:id", (req, res) => {
       else return true;
     }
   }
-  console.log(1)
-  console.log(isValidURL(userURLNEW))
 
   if (isValidURL(userURLNEW) === false || isValidURL(userURLNEW) === undefined) {
     res.send("NOT A VALID URL!");
-  console.log(2)
     return;
   }
-    console.log(3)
 //IMPLEMENT !!!!!!!!!!!
 //if(urls.find( x => x.id == shortURL).long !== undefined){
   let templateVars = {
     longRealUrl: req.params.id,
     shortURL: req.params.id, //MUST FIND MY ID FOR WEBSITE AND PUT IT THERE!!! ITS NOT req.params.id!!!!
     urls: userURLNEW,
-    guest: req.session["guest"]
+    guest: req.session.guest
   };
 
   res.render("urls_show", templateVars);
@@ -148,9 +144,9 @@ app.get("/urls/:id", (req, res) => {
 
 //DELETE
 app.post("/urls/:id/delete", (req, res) => {
-  let urlCurrent = urlDatabase.find( x => x.id == req.params.id)
+  let urlCurrent = urlDatabase.find( x => x.id == req.params.id);
   if (urlCurrent.userID !== req.session.guest) {
-    res.send("Not allowed!")
+    res.send("Not allowed!");
     return;
   }
   urlCurrent.long = null;
@@ -160,9 +156,9 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //UPDATE
 app.post("/urls/:id/update", (req, res) => {
-  let urlCurrent = urlDatabase.find( x => x.id == req.params.id)
+  let urlCurrent = urlDatabase.find( x => x.id == req.params.id);
   if (urlCurrent.userID !== req.session.guest) {
-    res.send("Not allowed!")
+    res.send("Not allowed!");
     return;
   }
   urlCurrent.long = req.body.updURL;
@@ -183,8 +179,8 @@ app.get("/register", (req, res) => {
   let templateVars = {
     guest: req.session["guest"]
   };
-  res.render("urls_register", templateVars)
-})
+  res.render("urls_register", templateVars);
+});
 
 //REGISTER POST
 app.post("/register", (req, res) => {
@@ -209,17 +205,17 @@ app.post("/register", (req, res) => {
     id : userID,
     email : req.body.email,
     password : hashedP
-  }
+  };
   res.redirect("/login");
-})
+});
 
 //LOGIN PAGE
 app.get("/login", (req, res) => {
   let templateVars = {
-    guest: req.session["guest"]
+    guest: req.session.guest
   };
-  res.render("urls_login", templateVars)
-})
+  res.render("urls_login", templateVars);
+});
 
 //LOGIN POST
 app.post("/login", (req,res) => {
@@ -228,7 +224,7 @@ app.post("/login", (req,res) => {
     return;
   }
   const userDB = Object.values(users);
-  const userBeing = userDB.find(x => x.email === req.body.email)
+  const userBeing = userDB.find(x => x.email === req.body.email);
   if (!userBeing) {
     res.status(403).send("That email is not in the directory");
     return;
@@ -240,13 +236,13 @@ app.post("/login", (req,res) => {
   req.session.guest = userBeing.id;
   // res.cookie("guest", userBeing.id);
   res.redirect("/urls");
-})
+});
 
 //LOGOUT
 app.post("/logout", (req, res) => {
-  delete req.session.guest
+  delete req.session.guest;
   res.redirect("/urls");
-})
+});
 
 //ROOT PAGE
 app.get("/", (req, res) => {
