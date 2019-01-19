@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -12,7 +12,7 @@ app.use(cookieSession({
   name: 'session',
   keys: ["abc"],
   maxAge: 24 * 60 * 60 * 1000
-}))
+}));
 
 let urlDatabase = [
   {
@@ -58,7 +58,6 @@ function generateRandomString() {
   return result;
 }
 
-
 //FIGURE OUT THAT ERROR WITH .long
 
 //URLS_INDEX
@@ -75,7 +74,7 @@ app.get("/urls", (req, res) => {
   }
   const templateVars = {
     urls: urlsForUser(req.session.guest),
-    guest: req.session["guest"]
+    guest: req.session.guest
     };
   res.render("urls_index", templateVars);
 });
@@ -94,7 +93,9 @@ app.get("/urls/new", (req, res) => {
 //Make new url in database
 app.post("/urls", (req, res) => {
   let randomId = generateRandomString();
-  urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest})
+  if (req.body.longURL.substring(0, 8) === "https://" || req.body.longURL.substring(0, 7) === "http://") {
+    urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest})
+  }
   let target_url = "/urls/" + randomId
   res.redirect(target_url)
 });
@@ -111,36 +112,34 @@ app.get("/urls/:id", (req, res) => {
     });
     return userURLS;
   }
-  console.log("my shortURL from params id is:", req.params.id)
   let userURLNEW = urlsForUser(req.params.id);
-
-  console.log(1)
+  console.log(userURLNEW)
 
   function isValidURL(urlArr) {
     for (let i of urlArr) {
       if (i === undefined ||
-      i.long.substring(0, 8) !== "https://" &&
-      i.long.substring(0, 7) !== "http://")
+        (i.long.substring(0, 8) !== "https://" && i.long.substring(0, 7) !== "http://"))
       {
         return false;
       }
       else return true;
     }
   }
+  console.log(1)
+  console.log(isValidURL(userURLNEW))
 
-  if (isValidURL(userURLNEW) === false) {
+  if (isValidURL(userURLNEW) === false || isValidURL(userURLNEW) === undefined) {
     res.send("NOT A VALID URL!");
   console.log(2)
     return;
   }
     console.log(3)
-
 //IMPLEMENT !!!!!!!!!!!
 //if(urls.find( x => x.id == shortURL).long !== undefined){
   let templateVars = {
     longRealUrl: req.params.id,
     shortURL: req.params.id, //MUST FIND MY ID FOR WEBSITE AND PUT IT THERE!!! ITS NOT req.params.id!!!!
-    urls: urlsForUser(req.session.guest),
+    urls: userURLNEW,
     guest: req.session["guest"]
   };
 
@@ -177,7 +176,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //REGISTER PAGE
 app.get("/register", (req, res) => {
