@@ -2,20 +2,33 @@ const express = require("express");
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session')
 
-app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(cookieSession({
+  name: 'session',
+  keys: ["abc"],
+  maxAge: 24 * 60 * 60 * 1000
+}))
 
 let urlDatabase = [
   {
-    id: "b2xVn2",
+    id: "b2XVn2",
     long: "http://www.lighthouselabs.ca",
+    userID: "Invisible"
   },
   {
     id: "9sm5xK",
-    long: "http://www.google.com"
+    long: "http://www.google.com",
+    userID: "Invisible"
+  },
+  {
+    id: "111111",
+    long: "https://www.reddit.com",
+    userID: "Invisible"
   }
 ];
 
@@ -34,16 +47,13 @@ let users = {
 
 
 function generateRandomString() {
-
   function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1) ) + min;
   }
-
-  const ABC = "0123456789ABCDEFGHIJKLOMNQPRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-
+  const ABC = "0123456789ABCDEFGHIJKLOMNQPRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   let result = "";
   for (let i = 0; i < 6; i++){
-    result += ABC.charAt(getRndInteger(0, ABC.length-1))
+    result += ABC.charAt(getRndInteger(0, ABC.length-1));
   }
   return result;
 }
@@ -53,9 +63,19 @@ function generateRandomString() {
 
 //URLS_INDEX
 app.get("/urls", (req, res) => {
+
+  function urlsForUser(id) {
+    let userURLS = [];
+      urlDatabase.forEach(function (x) {
+        if (x.userID === id) {
+        userURLS.push(x);
+      }
+    });
+    return userURLS;
+  }
   const templateVars = {
-    urls: urlDatabase,
-    guest: req.cookies["guest"]
+    urls: urlsForUser(req.session.guest),
+    guest: req.session["guest"]
     };
   res.render("urls_index", templateVars);
 });
@@ -63,55 +83,97 @@ app.get("/urls", (req, res) => {
 //URLS_NEW
 app.get("/urls/new", (req, res) => {
   const templateVars = {
-    guest: req.cookies["guest"],
+    guest: req.session["guest"],
   };
-  if (!req.cookies.guest) {
+  if (!req.session.guest) {
     res.redirect("/login");
   }
   res.render("urls_new", templateVars);
 });
 
-//REDIRECT
+//Make new url in database
 app.post("/urls", (req, res) => {
   let randomId = generateRandomString();
-  urlDatabase.push({id: randomId, long: req.body.longURL})
+  urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest})
   let target_url = "/urls/" + randomId
   res.redirect(target_url)
 });
 
 //URLS_SHOW
 app.get("/urls/:id", (req, res) => {
+
+  function urlsForUser(id) {
+    let userURLS = [];
+      urlDatabase.forEach(function (x) {
+        if (x.id === id) {
+        userURLS.push(x);
+      }
+    });
+    return userURLS;
+  }
+  console.log("my shortURL from params id is:", req.params.id)
+  let userURLNEW = urlsForUser(req.params.id);
+
+  console.log(1)
+
+  function isValidURL(urlArr) {
+    for (let i of urlArr) {
+      if (i === undefined ||
+      i.long.substring(0, 8) !== "https://" &&
+      i.long.substring(0, 7) !== "http://")
+      {
+        return false;
+      }
+      else return true;
+    }
+  }
+
+  if (isValidURL(userURLNEW) === false) {
+    res.send("NOT A VALID URL!");
+  console.log(2)
+    return;
+  }
+    console.log(3)
+
+//IMPLEMENT !!!!!!!!!!!
+//if(urls.find( x => x.id == shortURL).long !== undefined){
   let templateVars = {
-    shortURL: req.params.id,
-    urls: urlDatabase,
-    guest: req.cookies["guest"]
+    longRealUrl: req.params.id,
+    shortURL: req.params.id, //MUST FIND MY ID FOR WEBSITE AND PUT IT THERE!!! ITS NOT req.params.id!!!!
+    urls: urlsForUser(req.session.guest),
+    guest: req.session["guest"]
   };
+
   res.render("urls_show", templateVars);
 });
 
 //DELETE
 app.post("/urls/:id/delete", (req, res) => {
-  urlDatabase.find( x => x.id == req.params.id).long = null;
-  urlDatabase.find( x => x.id == req.params.id).id = null;
+  let urlCurrent = urlDatabase.find( x => x.id == req.params.id)
+  if (urlCurrent.userID !== req.session.guest) {
+    res.send("Not allowed!")
+    return;
+  }
+  urlCurrent.long = null;
+  urlCurrent.id = null;
   res.redirect("/urls");
 });
 
 //UPDATE
 app.post("/urls/:id/update", (req, res) => {
-  let foundUrl = urlDatabase.find( x => x.id == req.params.id)
-  foundUrl.long = req.body.updURL;
-  res.redirect(`/urls/${foundUrl.id}`);
+  let urlCurrent = urlDatabase.find( x => x.id == req.params.id)
+  if (urlCurrent.userID !== req.session.guest) {
+    res.send("Not allowed!")
+    return;
+  }
+  urlCurrent.long = req.body.updURL;
+  res.redirect(`/urls/${urlCurrent.id}`);
 });
 
 //SETTING A SHORT URL ADDRESS
 app.get("/u/:shortURL", (req, res) => {
   let id = req.params.shortURL;
   let longURL = urlDatabase.find( x => x.id == id).long
-  if (
-    longURL.substring(0,7) !== "https://" ||
-    longURL.substring(0,6) !== "http://") {
-    res.send("Improper URL !")
-  }
   res.redirect(longURL);
 });
 
@@ -120,7 +182,7 @@ app.get("/u/:shortURL", (req, res) => {
 //REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    guest: req.cookies["guest"]
+    guest: req.session["guest"]
   };
   res.render("urls_register", templateVars)
 })
@@ -128,6 +190,8 @@ app.get("/register", (req, res) => {
 //REGISTER POST
 app.post("/register", (req, res) => {
 
+  const pass = req.body.password;
+  const hashedP = bcrypt.hashSync(pass, 10);
   const userID = generateRandomString();
 
   if (!req.body.email || !req.body.password) {
@@ -145,7 +209,7 @@ app.post("/register", (req, res) => {
   else users.userID = {
     id : userID,
     email : req.body.email,
-    password : req.body.password
+    password : hashedP
   }
   res.redirect("/login");
 })
@@ -153,39 +217,35 @@ app.post("/register", (req, res) => {
 //LOGIN PAGE
 app.get("/login", (req, res) => {
   let templateVars = {
-    guest: req.cookies["guest"]
+    guest: req.session["guest"]
   };
   res.render("urls_login", templateVars)
 })
 
 //LOGIN POST
 app.post("/login", (req,res) => {
-
   if (!req.body.email || !req.body.password) {
     res.status(400).send('Empty email or password fields.');
     return;
   }
   const userDB = Object.values(users);
-
   const userBeing = userDB.find(x => x.email === req.body.email)
-
   if (!userBeing) {
     res.status(403).send("That email is not in the directory");
     return;
   }
-
-  if (userBeing.password !== req.body.password) {
+  if (bcrypt.compareSync(req.body.password, userBeing.password) === false) {
     res.send("Incorrect Password!");
     return;
   }
-
-  res.cookie("guest", userBeing.id);
+  req.session.guest = userBeing.id;
+  // res.cookie("guest", userBeing.id);
   res.redirect("/urls");
 })
 
 //LOGOUT
 app.post("/logout", (req, res) => {
-  res.clearCookie("guest")
+  delete req.session.guest
   res.redirect("/urls");
 })
 
