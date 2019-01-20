@@ -15,10 +15,21 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }));
 
-//Emmpty database of urls, to be filled out by the user
-let urlDatabase = [];
+//database of urls, to be filled out by the user. an example url is provided
+let urlDatabase = [
+  {
+    id: "abc123",
+    long: "https://www.google.com",
+    userID: "123abc"
+  }];
 //Cookies. To be filled out as users register and login.
-let users = {};
+let users = {
+  "123ABC" : {
+    id: "123ABC",
+    email: "user@example.com",
+    password: "hashedpassword"
+  }
+};
 //Function used to come up with a unique 6 symbol id
 function generateRandomString() {
   function getRndInteger(min, max) {
