@@ -7,9 +7,8 @@
             TinyApp!
 
         <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/urls">URLS</a></li>
-            <li><a href="/urls/new">NEW</a></li>
+            <li><a href="/urls">Home</a></li>
+            <li><a href="/urls/new">Make URL Tiny!</a></li>
 
         </ul>
     </div>
@@ -24,7 +23,7 @@
       </a>
     <% } else { %>
         <p>
-          Your guest name is: <%=guest%>
+          Your are logged in as: <%=users.find(x => x.id === guest).email%>, what a beautiful email!
         </p>
         <form method="POST" action="/logout">
         <input type="submit" value="Logout!">

@@ -7,27 +7,27 @@
 </head>
 <body>
 
-<header>
+  <header>
     <% include partials/_header/ %>
-</header>
+  </header>
 
 
-      <% urls.forEach ( (x) => { %>
+  <% urls.forEach ( (x) => { %>
 
-      <% if (x.id != null) { %>
-      <li><a href="/urls/<%= x.id %>"><%= x.long %></a>
+  <% if (x.id != null) { %>
+  <li><a href="/urls/<%= x.id %>"><%= x.long %></a>
 
-        <form method="POST" action="/urls/<%= x.id %>/update">
-          <input type="submit" value="Edit">
-        </form>
+    <form method="POST" action="/urls/<%= x.id %>/update">
+      <input type="submit" value="Edit">
+    </form>
 
-        <form method="POST" action="/urls/<%= x.id %>/delete">
-          <input type="submit" value="Delete">
-        </form>
+    <form method="POST" action="/urls/<%= x.id %>/delete">
+      <input type="submit" value="Delete">
+    </form>
 
-      </li>
+  </li>
 
-      <% }}) %>
+  <% }}) %>
 
 
 </body>

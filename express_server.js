@@ -32,19 +32,7 @@ let urlDatabase = [
   }
 ];
 
-let users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk"
-  }
-};
-
+let users = {};
 
 function generateRandomString() {
   function getRndInteger(min, max) {
@@ -57,8 +45,6 @@ function generateRandomString() {
   }
   return result;
 }
-
-//FIGURE OUT THAT ERROR WITH .long
 
 //URLS_INDEX
 app.get("/urls", (req, res) => {
@@ -74,7 +60,8 @@ app.get("/urls", (req, res) => {
   }
   const templateVars = {
     urls: urlsForUser(req.session.guest),
-    guest: req.session.guest
+    guest: req.session.guest,
+    users: Object.values(users)
     };
   res.render("urls_index", templateVars);
 });
@@ -83,6 +70,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
   const templateVars = {
     guest: req.session.guest,
+    users: Object.values(users)
   };
   if (!req.session.guest) {
     res.redirect("/login");
@@ -113,7 +101,6 @@ app.get("/urls/:id", (req, res) => {
     return userURLS;
   }
   let userURLNEW = urlsForUser(req.params.id);
-  console.log(userURLNEW);
 
   function isValidURL(urlArr) {
     for (let i of urlArr) {
@@ -130,13 +117,12 @@ app.get("/urls/:id", (req, res) => {
     res.send("NOT A VALID URL!");
     return;
   }
-//IMPLEMENT !!!!!!!!!!!
-//if(urls.find( x => x.id == shortURL).long !== undefined){
+
   let templateVars = {
-    longRealUrl: req.params.id,
-    shortURL: req.params.id, //MUST FIND MY ID FOR WEBSITE AND PUT IT THERE!!! ITS NOT req.params.id!!!!
+    shortURL: req.params.id,
     urls: userURLNEW,
-    guest: req.session.guest
+    guest: req.session.guest,
+    users: Object.values(users)
   };
 
   res.render("urls_show", templateVars);
@@ -168,7 +154,7 @@ app.post("/urls/:id/update", (req, res) => {
 //SETTING A SHORT URL ADDRESS
 app.get("/u/:shortURL", (req, res) => {
   let id = req.params.shortURL;
-  let longURL = urlDatabase.find( x => x.id == id).long
+  let longURL = urlDatabase.find( x => x.id == id).long;
   res.redirect(longURL);
 });
 
@@ -177,8 +163,8 @@ app.get("/u/:shortURL", (req, res) => {
 //REGISTER PAGE
 app.get("/register", (req, res) => {
   let templateVars = {
-    guest: req.session["guest"]
-  };
+    guest: req.session.guest
+    };
   res.render("urls_register", templateVars);
 });
 
@@ -193,9 +179,7 @@ app.post("/register", (req, res) => {
     res.status(400).send('Invalid email or password.');
     return;
   }
-
   const userDB = Object.values(users);
-
   if (userDB.find(x => x.email === req.body.email)) {
     res.status(400).send("That email is already in use!");
     return;
@@ -214,6 +198,8 @@ app.get("/login", (req, res) => {
   let templateVars = {
     guest: req.session.guest
   };
+  console.log(Object.values(users).find(x => x.id === req.session.guest))
+
   res.render("urls_login", templateVars);
 });
 
