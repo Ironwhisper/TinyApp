@@ -5,23 +5,21 @@
 <head>
   <title>TinyApp</title>
 </head>
-<body>
-<header>
+<body style="font-size:20px; padding:50px;">
+  <header>
     <% include partials/_header %>
-</header>
-      <h2> Your short URL is: <%= shortURL %></h2>
-      <p>
-      Use this link to go to your website! :
-      </p>
-      <p>
-          <a href = "<%= urls.find(x => x.id === shortURL).long %>">localhost:8080/u/<%= shortURL %> </a>
-      </p>
-      <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
-
-      <input id="updURL" type="text" name="updURL" placeholder="http://" style="width: 300px">
-
-      <input type="submit" value="Update!">
-      </form>
+  </header>
+  <h2> Your short URL is: <%= shortURL %></h2>
+  <p>
+    Use this link to go to your website! :
+  </p>
+  <p>
+    <a href = "<%= urls.find(x => x.id === shortURL).long %>">localhost:8080/u/<%= shortURL %> </a>
+  </p>
+  <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
+    <input id="updURL" type="text" name="updURL" placeholder="http://" style="width: 300px">
+    <input type="submit" value="Update!">
+  </form>
 </body>
 </html>
 

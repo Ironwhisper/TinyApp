@@ -3,32 +3,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>TinyApp</title>
+  <title>TinyApp!</title>
 </head>
-<body>
-
+<body style="font-size:20px; padding:50px;">
   <header>
     <% include partials/_header/ %>
   </header>
-
-
   <% urls.forEach ( (x) => { %>
-
   <% if (x.id != null) { %>
   <li><a href="/urls/<%= x.id %>"><%= x.long %></a>
-
     <form method="POST" action="/urls/<%= x.id %>/update">
       <input type="submit" value="Edit">
     </form>
-
     <form method="POST" action="/urls/<%= x.id %>/delete">
       <input type="submit" value="Delete">
     </form>
-
   </li>
-
   <% }}) %>
-
-
 </body>
 </html>

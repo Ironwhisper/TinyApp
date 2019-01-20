@@ -1,33 +1,28 @@
 
 
 <nav class="navbar navbar-default" role="navigation">
-<div class="container-fluid">
-
+  <div class="container-fluid">
     <div class="navbar-header">
-            TinyApp!
-
-        <ul class="nav navbar-nav">
-            <li><a href="/urls">Home</a></li>
-            <li><a href="/urls/new">Make URL Tiny!</a></li>
-
-        </ul>
+      Welcome to TinyApp!
+      <ul class="nav navbar-nav">
+        <li><a href="/urls">Home</a></li>
+        <li><a href="/urls/new">Make URL Tiny!</a></li>
+      </ul>
     </div>
-
     <% if (guest == undefined) { %>
-      <a href="/login">
-          <button>Login</button>
-      </a>
-
-      <a href="/register">
-          <button>Register</button>
-      </a>
+    <a href="/login">
+      <button>Login</button>
+    </a>
+    <a href="/register">
+      <button>Register</button>
+    </a>
     <% } else { %>
-        <p>
-          Your are logged in as: <%=users.find(x => x.id === guest).email%>, what a beautiful email!
-        </p>
-        <form method="POST" action="/logout">
-        <input type="submit" value="Logout!">
-        </form>
+    <p>
+      Your are logged in as: <%=users.find(x => x.id === guest).email%>, what a beautiful email!
+    </p>
+    <form method="POST" action="/logout">
+      <input type="submit" value="Logout!">
+    </form>
     <% } %>
-</div>
+  </div>
 </nav>

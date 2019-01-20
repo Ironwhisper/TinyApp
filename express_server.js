@@ -112,7 +112,7 @@ app.get("/urls/:id", (req, res) => {
 
 //code for deleting a url from the database
 app.post("/urls/:id/delete", (req, res) => {
-  let urlCurrent = urlDatabase.find( x => x.id == req.params.id);
+  let urlCurrent = urlDatabase.find( x => x.id === req.params.id);
   if (urlCurrent.userID !== req.session.guest) {
     res.send("Not allowed!");
     return;
@@ -124,7 +124,7 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //updating an existing url in the database
 app.post("/urls/:id/update", (req, res) => {
-  let urlCurrent = urlDatabase.find( x => x.id == req.params.id);
+  let urlCurrent = urlDatabase.find( x => x.id === req.params.id);
   if (urlCurrent.userID !== req.session.guest) {
     res.send("Not allowed!");
     return;
@@ -136,7 +136,7 @@ app.post("/urls/:id/update", (req, res) => {
 //setting a shortened URL to an original long address
 app.get("/u/:shortURL", (req, res) => {
   let id = req.params.shortURL;
-  let longURL = urlDatabase.find( x => x.id == id).long;
+  let longURL = urlDatabase.find( x => x.id === id).long;
   res.redirect(longURL);
 });
 
@@ -175,7 +175,6 @@ app.get("/login", (req, res) => {
   let templateVars = {
     guest: req.session.guest
   };
-  console.log(Object.values(users).find(x => x.id === req.session.guest))
   res.render("urls_login", templateVars);
 });
 
