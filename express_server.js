@@ -1,3 +1,5 @@
+
+//Dependencies
 const express = require("express");
 const app = express();
 const PORT = 8080;
@@ -14,23 +16,8 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000
 }));
 
-let urlDatabase = [
-  {
-    id: "b2XVn2",
-    long: "http://www.lighthouselabs.ca",
-    userID: "Invisible"
-  },
-  {
-    id: "9sm5xK",
-    long: "http://www.google.com",
-    userID: "Invisible"
-  },
-  {
-    id: "111111",
-    long: "https://www.reddit.com",
-    userID: "Invisible"
-  }
-];
+//
+let urlDatabase = [];
 
 let users = {};
 
@@ -232,7 +219,7 @@ app.post("/logout", (req, res) => {
 
 //ROOT PAGE
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
 
