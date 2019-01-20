@@ -6,10 +6,10 @@
       Welcome to TinyApp!
       <ul class="nav navbar-nav">
         <li><a href="/urls">Home</a></li>
-        <li><a href="/urls/new">Make URL Tiny!</a></li>
+        <li><a href="/urls/new">Make a URL Tiny!</a></li>
       </ul>
     </div>
-    <% if (guest == undefined) { %>
+    <% if (guest === undefined || users === undefined) { %>
     <a href="/login">
       <button>Login</button>
     </a>

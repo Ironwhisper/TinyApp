@@ -7,7 +7,6 @@ const bodyParser = require("body-parser");
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(cookieSession({
@@ -43,6 +42,9 @@ app.get("/urls", (req, res) => {
       }
     });
     return userURLS;
+  }
+  if (Object.values(users) === undefined || Object.values(users) === null){
+    res.redirect("/login")
   }
   const templateVars = {
     urls: urlsForUser(req.session.guest),
@@ -87,9 +89,10 @@ app.get("/urls/:id", (req, res) => {
   }
   let userURLNEW = urlsForUser(req.params.id);
   //function used to determine if a url starts with an http(s)://
+  console.log(userURLNEW)
   function isValidURL(urlArr) {
     for (let i of urlArr) {
-      if (i === undefined ||
+      if (i === undefined || i.long === undefined ||
         (i.long.substring(0, 8) !== "https://" && i.long.substring(0, 7) !== "http://"))
       {
         return false;
@@ -110,7 +113,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-//code for deleting a url from the database
+//deleting a url from the database
 app.post("/urls/:id/delete", (req, res) => {
   let urlCurrent = urlDatabase.find( x => x.id === req.params.id);
   if (urlCurrent.userID !== req.session.guest) {

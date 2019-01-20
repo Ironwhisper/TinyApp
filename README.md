@@ -8,3 +8,17 @@ The user will only be able to see a list of shortened urls that they themselves 
 They can manipulate their list by updating the existing urls destination address url, or deleting a url from the list altogether.
 Others users' data is inaccessible.
 User's passwords are securely hashed and stored using bcrypt.
+
+## Dependencies
+
+- Node.js
+- Express
+- EJS
+- Bcrypt
+- Body-parser
+- Cookie-session
+
+## Getting started
+
+- Install all dependencies using 'npm install' command
+- run server using 'node express-server.js' or 'npm start'

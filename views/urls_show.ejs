@@ -16,7 +16,7 @@
   <p>
     <a href = "<%= urls.find(x => x.id === shortURL).long %>">localhost:8080/u/<%= shortURL %> </a>
   </p>
-  <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
+  <form action="/urls/<%= shortURL %>/update" method="POST" style="margin: 50px;">
     <input id="updURL" type="text" name="updURL" placeholder="http://" style="width: 300px">
     <input type="submit" value="Update!">
   </form>
