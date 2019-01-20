@@ -22,3 +22,8 @@ User's passwords are securely hashed and stored using bcrypt.
 
 - Install all dependencies using 'npm install' command
 - run server using 'node express-server.js' or 'npm start'
+
+## Screenshots:
+
+![Screenshot of the urls page](https://github.com/Ironwhisper/TinyApp/blob/master/docs/url-home.png)
+![Screenshot of making a new short url page](https://github.com/Ironwhisper/TinyApp/blob/master/docs/url-new.png)
