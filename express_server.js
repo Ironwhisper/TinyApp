@@ -21,15 +21,11 @@ let urlDatabase = [
     id: "abc123",
     long: "https://www.google.com",
     userID: "123abc"
-  }];
-//Cookies. To be filled out as users register and login.
-let users = {
-  "123ABC" : {
-    id: "123ABC",
-    email: "user@example.com",
-    password: "hashedpassword"
   }
-};
+];
+//Cookies. To be filled out as users register and login.
+let users = {};
+
 //Function used to come up with a unique 6 symbol id
 function generateRandomString() {
   function getRndInteger(min, max) {
@@ -54,7 +50,7 @@ app.get("/urls", (req, res) => {
     });
     return userURLS;
   }
-  if (Object.values(users) === undefined || Object.values(users) === null){
+  if (!Object.values(users)){
     res.redirect("/login")
   }
   const templateVars = {
@@ -83,6 +79,8 @@ app.post("/urls", (req, res) => {
   if (req.body.longURL.substring(0, 8) === "https://" || req.body.longURL.substring(0, 7) === "http://") {
     urlDatabase.push({id: randomId, long: req.body.longURL, userID: req.session.guest});
   }
+  else {res.send("Please include \"http://\" or \"https://\" in front of the url!");
+    }
   let target_url = "/urls/" + randomId;
   res.redirect(target_url);
 });
@@ -100,7 +98,6 @@ app.get("/urls/:id", (req, res) => {
   }
   let userURLNEW = urlsForUser(req.params.id);
   //function used to determine if a url starts with an http(s)://
-  console.log(userURLNEW)
   function isValidURL(urlArr) {
     for (let i of urlArr) {
       if (i === undefined || i.long === undefined ||
@@ -143,9 +140,15 @@ app.post("/urls/:id/update", (req, res) => {
     res.send("Not allowed!");
     return;
   }
-  urlCurrent.long = req.body.updURL;
-  res.redirect(`/urls/${urlCurrent.id}`);
-});
+  if (req.body.updURL.substring(0, 8) !== "https://" &&
+    req.body.updURL.substring(0, 7) !== "http://") {
+    res.send("Invalid URL!");
+    return;
+  }
+  else {
+    urlCurrent.long = req.body.updURL;
+    res.redirect(`/urls/${urlCurrent.id}`);
+  }});
 
 //setting a shortened URL to an original long address
 app.get("/u/:shortURL", (req, res) => {

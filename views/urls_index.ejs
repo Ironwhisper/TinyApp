@@ -12,16 +12,17 @@
   <% urls.forEach ( (x) => { %>
   <% if (x.id != null) { %>
   <li>
-    <a href="/urls/<%= x.id %>"><%= x.long %></a>
+    <a href="/urls/<%= x.id %>" style="padding: 30px"><%= x.long %></a>
     <ul>
       <li>
-        <form method="POST" action="/urls/<%= x.id %>/update">
-        <input type="submit" value="Edit">
-      </form>
-    </li>
-      <li><form method="POST" action="/urls/<%= x.id %>/delete">
-        <input type="submit" value="Delete">
-      </form></li>
+        <a href = "/urls/<%= x.id %>">
+          <button> Edit </button>
+        </li>
+      <li>
+        <form method="POST" action="/urls/<%= x.id %>/delete">
+          <input type="submit" value="Delete">
+        </form>
+      </li>
     </ul>
   </li>
   <% }}) %>
